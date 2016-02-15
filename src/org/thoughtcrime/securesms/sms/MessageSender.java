@@ -155,9 +155,7 @@ public class MessageSender {
   private static void sendTextMessage(Context context, Recipients recipients,
                                       boolean forceSms, boolean keyExchange, long messageId)
   {
-    if (!forceSms && isSelfSend(context, recipients)) {
-      sendTextSelf(context, messageId);
-    } else if (!forceSms && isPushTextSend(context, recipients, keyExchange)) {
+    if (!forceSms && isPushTextSend(context, recipients, keyExchange)) {
       sendTextPush(context, recipients, messageId);
     } else {
       sendSms(context, recipients, messageId);
