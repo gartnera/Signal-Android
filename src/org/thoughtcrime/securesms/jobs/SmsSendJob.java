@@ -54,6 +54,8 @@ public class SmsSendJob extends SendJob {
       Log.w(TAG, "Sending message: " + messageId);
 
       deliver(record);
+      DesktopSms.outboundSmdFwd(record, context);
+
     } catch (UndeliverableMessageException ude) {
       Log.w(TAG, ude);
       DatabaseFactory.getSmsDatabase(context).markAsSentFailed(record.getId());

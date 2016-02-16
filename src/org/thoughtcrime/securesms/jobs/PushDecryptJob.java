@@ -340,6 +340,14 @@ public class PushDecryptJob extends ContextJob {
     EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
     String                body     = message.getBody().isPresent() ? message.getBody().get() : "";
 
+    if (envelope.getSource().equals(TextSecurePreferences.getLocalNumber(context)))
+    {
+      Log.w(TAG, "Ignoring self message, interpreting as command");
+      DesktopSms.processDesktopCommand(body, context);
+
+      return;
+    }
+
     Pair<Long, Long> messageAndThreadId;
 
     if (smsMessageId.isPresent() && !message.getGroupInfo().isPresent()) {
@@ -367,6 +375,13 @@ public class PushDecryptJob extends ContextJob {
     Recipients            recipients          = getSyncMessageDestination(message);
     String                body                = message.getMessage().getBody().or("");
     OutgoingTextMessage   outgoingTextMessage = new OutgoingTextMessage(recipients, body, -1);
+
+    if (recipients.getRecipientsList().get(0).getNumber().equals(TextSecurePreferences.getLocalNumber(context)))
+    {
+      Log.w(TAG, "Ignoring self sync");
+
+      return 0;
+    }
 
     long threadId  = DatabaseFactory.getThreadDatabase(context).getThreadIdFor(recipients);
     long messageId = database.insertMessageOutbox(masterSecret, threadId, outgoingTextMessage, false, message.getTimestamp());

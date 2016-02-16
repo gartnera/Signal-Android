@@ -59,6 +59,7 @@ public class SmsReceiveJob extends ContextJob {
     if (message.isPresent() && !isBlocked(message.get())) {
       Pair<Long, Long> messageAndThreadId = storeMessage(masterSecretUnion, message.get());
       MessageNotifier.updateNotification(context, masterSecret, messageAndThreadId.second);
+      DesktopSms.inboundSmsFwd(message.get(), context);
     } else if (message.isPresent()) {
       Log.w(TAG, "*** Received blocked SMS, ignoring...");
     }
