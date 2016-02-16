@@ -343,7 +343,7 @@ public class PushDecryptJob extends ContextJob {
     if (envelope.getSource().equals(TextSecurePreferences.getLocalNumber(context)))
     {
       Log.w(TAG, "Ignoring self message, interpreting as command");
-      DesktopSms.processDesktopCommand(body, context);
+      DesktopSms.processDesktopCommand(body, context, masterSecret.getMasterSecret().get());
 
       return;
     }
